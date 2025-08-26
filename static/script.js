@@ -37,7 +37,6 @@ async function predictPrice() {
 
     // Debug: Log the request being sent
     const requestBody = {
-      model: config.perplexity.model,
       messages: [
         {
           role: 'user',
