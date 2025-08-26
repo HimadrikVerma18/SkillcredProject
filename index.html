@@ -12,15 +12,20 @@
 
 <div class="container">
   <h1>🛒 E-commerce Price Predictor</h1>
+  
   <div class="form-grid">
     <div class="form-group">
-      <label>Category</label>
-      <select id="category">
+      <label>Product Category</label>
+      <select id="category" onchange="updateFormFields()">
+        <option value="">Select Category</option>
         <option value="electronics">Electronics</option>
-        <option value="clothing">Clothing</option>
+        <option value="clothing">Clothing & Fashion</option>
         <option value="home">Home & Garden</option>
-        <option value="books">Books</option>
-        <option value="sports">Sports</option>
+        <option value="books">Books & Media</option>
+        <option value="sports">Sports & Fitness</option>
+        <option value="automotive">Automotive</option>
+        <option value="beauty">Beauty & Health</option>
+        <option value="toys">Toys & Games</option>
       </select>
     </div>
 
@@ -29,20 +34,13 @@
       <input type="number" id="brand_rating" min="1" max="5" value="3">
     </div>
 
-    <div class="form-group">
-      <label>Weight (kg)</label>
-      <input type="number" id="weight" value="1.5">
+    <!-- Category header will be displayed here -->
+    <div id="category-header" class="category-header" style="display:none;">
+      <h3 id="category-title"></h3>
     </div>
 
-    <div class="form-group">
-      <label>Dimensions (cm³)</label>
-      <input type="number" id="dimensions" value="1000">
-    </div>
-
-    <div class="form-group">
-      <label>Warranty (months)</label>
-      <input type="number" id="warranty" value="12">
-    </div>
+    <!-- Dynamic fields will be inserted here -->
+    <div id="dynamic-fields"></div>
 
     <div class="form-group">
       <label>Seller Rating (1-5)</label>
@@ -50,15 +48,15 @@
     </div>
 
     <div class="form-group">
-      <label>Competition</label>
+      <label>Market Competition</label>
       <select id="competition">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
+        <option value="low">Low Competition</option>
+        <option value="medium">Medium Competition</option>
+        <option value="high">High Competition</option>
       </select>
     </div>
 
-    <button onclick="predictPrice()">🔮 Predict Price</button>
+    <button onclick="predictPrice()" class="predict-btn">🔮 Predict Price</button>
   </div>
 
   <div class="result-card" id="result" style="display:none;">
@@ -87,6 +85,156 @@ const config = {
     loadingMessage: '🤔 Analyzing...'
   }
 };
+
+// Category-specific field configurations
+const categoryFields = {
+  electronics: {
+    name: 'Electronics & Gadgets',
+    fields: [
+      { id: 'weight', label: 'Weight (kg)', type: 'number', value: '0.5', min: '0.1', max: '50' },
+      { id: 'dimensions', label: 'Dimensions (cm³)', type: 'number', value: '1000', min: '1', max: '100000' },
+      { id: 'warranty', label: 'Warranty (months)', type: 'number', value: '12', min: '0', max: '60' },
+      { id: 'condition', label: 'Condition', type: 'select', options: ['new', 'refurbished', 'used-like-new', 'used-good', 'used-acceptable'] }
+    ]
+  },
+  clothing: {
+    name: 'Clothing & Fashion',
+    fields: [
+      { id: 'size', label: 'Size', type: 'select', options: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
+      { id: 'material', label: 'Material', type: 'select', options: ['cotton', 'polyester', 'wool', 'silk', 'denim', 'leather', 'synthetic'] },
+      { id: 'season', label: 'Season', type: 'select', options: ['spring', 'summer', 'autumn', 'winter', 'all-season'] },
+      { id: 'brand_tier', label: 'Brand Tier', type: 'select', options: ['budget', 'mid-range', 'premium', 'luxury'] }
+    ]
+  },
+  home: {
+    name: 'Home & Garden',
+    fields: [
+      { id: 'weight', label: 'Weight (kg)', type: 'number', value: '2.0', min: '0.1', max: '100' },
+      { id: 'dimensions', label: 'Dimensions (cm³)', type: 'number', value: '5000', min: '100', max: '1000000' },
+      { id: 'material', label: 'Material', type: 'select', options: ['wood', 'metal', 'plastic', 'glass', 'fabric', 'ceramic'] },
+      { id: 'room_type', label: 'Room Type', type: 'select', options: ['living', 'bedroom', 'kitchen', 'bathroom', 'outdoor', 'office'] }
+    ]
+  },
+  books: {
+    name: 'Books & Media',
+    fields: [
+      { id: 'pages', label: 'Pages', type: 'number', value: '300', min: '1', max: '2000' },
+      { id: 'format', label: 'Format', type: 'select', options: ['hardcover', 'paperback', 'ebook', 'audiobook'] },
+      { id: 'genre', label: 'Genre', type: 'select', options: ['fiction', 'non-fiction', 'academic', 'children', 'self-help', 'biography'] },
+      { id: 'publication_year', label: 'Publication Year', type: 'number', value: '2023', min: '1900', max: '2024' }
+    ]
+  },
+  sports: {
+    name: 'Sports & Fitness',
+    fields: [
+      { id: 'weight', label: 'Weight (kg)', type: 'number', value: '1.0', min: '0.1', max: '20' },
+      { id: 'sport_type', label: 'Sport Type', type: 'select', options: ['fitness', 'running', 'cycling', 'swimming', 'team-sports', 'outdoor', 'gym'] },
+      { id: 'skill_level', label: 'Skill Level', type: 'select', options: ['beginner', 'intermediate', 'advanced', 'professional'] },
+      { id: 'age_group', label: 'Age Group', type: 'select', options: ['kids', 'youth', 'adult', 'senior'] }
+    ]
+  },
+  automotive: {
+    name: 'Automotive',
+    fields: [
+      { id: 'year', label: 'Year', type: 'number', value: '2020', min: '1990', max: '2024' },
+      { id: 'mileage', label: 'Mileage (km)', type: 'number', value: '50000', min: '0', max: '500000' },
+      { id: 'fuel_type', label: 'Fuel Type', type: 'select', options: ['petrol', 'diesel', 'electric', 'hybrid', 'cng'] },
+      { id: 'transmission', label: 'Transmission', type: 'select', options: ['manual', 'automatic', 'cvt', 'semi-automatic'] }
+    ]
+  },
+  beauty: {
+    name: 'Beauty & Health',
+    fields: [
+      { id: 'volume', label: 'Volume (ml)', type: 'number', value: '100', min: '1', max: '1000' },
+      { id: 'skin_type', label: 'Skin Type', type: 'select', options: ['all', 'dry', 'oily', 'combination', 'sensitive', 'normal'] },
+      { id: 'brand_tier', label: 'Brand Tier', type: 'select', options: ['drugstore', 'mid-range', 'premium', 'luxury'] },
+      { id: 'cruelty_free', label: 'Cruelty Free', type: 'select', options: ['yes', 'no', 'unknown'] }
+    ]
+  },
+  toys: {
+    name: 'Toys & Games',
+    fields: [
+      { id: 'age_range', label: 'Age Range', type: 'select', options: ['0-2', '3-5', '6-8', '9-12', '13+'] },
+      { id: 'battery_required', label: 'Battery Required', type: 'select', options: ['yes', 'no'] },
+      { id: 'educational', label: 'Educational Value', type: 'select', options: ['none', 'low', 'medium', 'high'] },
+      { id: 'brand_tier', label: 'Brand Tier', type: 'select', options: ['budget', 'mid-range', 'premium', 'luxury'] }
+    ]
+  }
+};
+
+// Function to update form fields based on selected category
+function updateFormFields() {
+  const category = document.getElementById('category').value;
+  const dynamicFieldsDiv = document.getElementById('dynamic-fields');
+  const categoryHeaderDiv = document.getElementById('category-header');
+  const categoryTitle = document.getElementById('category-title');
+  
+  // Clear previous fields
+  dynamicFieldsDiv.innerHTML = '';
+  
+  if (!category) {
+    categoryHeaderDiv.style.display = 'none';
+    return;
+  }
+  
+  const fields = categoryFields[category];
+  if (!fields) return;
+  
+  // Show category header
+  categoryTitle.textContent = fields.name;
+  categoryHeaderDiv.style.display = 'block';
+  
+  // Add smooth animation
+  categoryHeaderDiv.style.opacity = '0';
+  categoryHeaderDiv.style.transform = 'translateY(-10px)';
+  
+  setTimeout(() => {
+    categoryHeaderDiv.style.transition = 'all 0.3s ease';
+    categoryHeaderDiv.style.opacity = '1';
+    categoryHeaderDiv.style.transform = 'translateY(0)';
+  }, 100);
+  
+  // Generate fields with staggered animation
+  let html = '';
+  fields.fields.forEach((field, index) => {
+    if (field.type === 'select') {
+      html += `
+        <div class="form-group" style="opacity: 0; transform: translateY(20px); transition: all 0.3s ease ${index * 0.1}s;">
+          <label>${field.label}</label>
+          <select id="${field.id}">
+            ${field.options.map(option => `<option value="${option}">${option.charAt(0).toUpperCase() + option.slice(1)}</option>`).join('')}
+          </select>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="form-group" style="opacity: 0; transform: translateY(20px); transition: all 0.3s ease ${index * 0.1}s;">
+          <label>${field.label}</label>
+          <input type="${field.type}" id="${field.id}" value="${field.value}" min="${field.min}" max="${field.max}">
+        </div>
+      `;
+    }
+  });
+  
+  dynamicFieldsDiv.innerHTML = html;
+  
+  // Animate fields in
+  setTimeout(() => {
+    const fieldGroups = dynamicFieldsDiv.querySelectorAll('.form-group');
+    fieldGroups.forEach(group => {
+      group.style.opacity = '1';
+      group.style.transform = 'translateY(0)';
+    });
+  }, 200);
+  
+  // Hide result if category changes
+  document.getElementById('result').style.display = 'none';
+}
+
+// Initialize form on page load
+document.addEventListener('DOMContentLoaded', function() {
+  updateFormFields();
+});
 </script>
 
 <script src="./static/script.js"></script>

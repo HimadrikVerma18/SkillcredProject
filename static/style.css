@@ -12,7 +12,7 @@ body {
   background: #fff;
   border-radius: 20px;
   padding: 40px;
-  max-width: 900px;
+  max-width: 1000px;
   width: 95%;
   box-shadow: 0 20px 50px rgba(0,0,0,0.2);
   transition: transform 0.3s ease;
@@ -27,12 +27,14 @@ h1 {
   font-family: 'Montserrat', sans-serif;
   color: #ff6f61;
   margin-bottom: 30px;
+  font-size: 2.2rem;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 25px;
+  margin-bottom: 30px;
 }
 
 .form-group {
@@ -40,77 +42,185 @@ h1 {
   flex-direction: column;
 }
 
+.form-group.full-width {
+  grid-column: span 2;
+}
+
 label {
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   color: #333;
+  font-size: 0.95rem;
 }
 
 input, select {
-  padding: 10px;
+  padding: 12px;
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 2px solid #e0e0e0;
   font-size: 1rem;
-  transition: border 0.3s;
+  transition: all 0.3s ease;
+  background: #fafafa;
 }
 
 input:focus, select:focus {
   outline: none;
   border-color: #ff6f61;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
 }
 
-button {
+input:hover, select:hover {
+  border-color: #ff8a80;
+  background: #fff;
+}
+
+.predict-btn {
   grid-column: span 2;
-  padding: 15px;
+  padding: 18px;
   background: linear-gradient(90deg, #ff6f61, #ff9472);
   color: white;
   font-weight: 700;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  font-size: 1.1rem;
-  margin-top: 10px;
-  transition: opacity 0.3s;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-button:hover {
-  opacity: 0.9;
+.predict-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 111, 97, 0.3);
+}
+
+.predict-btn:active {
+  transform: translateY(0);
 }
 
 .result-card {
   margin-top: 30px;
-  background: #f9f9f9;
+  background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
   border-radius: 20px;
-  padding: 25px;
+  padding: 30px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;
 }
 
 .price {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
   color: #ff6f61;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .anomaly {
-  margin-top: 10px;
-  padding: 12px;
-  background: #fff0f0;
+  margin-top: 15px;
+  padding: 15px;
+  background: linear-gradient(135deg, #fff0f0 0%, #ffe0e0 100%);
   color: #d32f2f;
-  border-radius: 10px;
+  border-radius: 15px;
   font-weight: 600;
+  border: 1px solid #ffcdd2;
+  font-size: 0.95rem;
 }
 
 canvas {
-  margin-top: 20px;
+  margin-top: 25px;
+  max-width: 100%;
+  height: auto;
 }
 
-@media(max-width: 700px){
+/* Category-specific styling */
+.category-header {
+  grid-column: span 2;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border-radius: 15px;
+  border: 1px solid #b3d9ff;
+}
+
+.category-header h3 {
+  margin: 0;
+  color: #0066cc;
+  font-size: 1.3rem;
+}
+
+/* Responsive design */
+@media(max-width: 768px){
+  .container {
+    padding: 25px;
+    margin: 20px;
+  }
+  
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
-  button {
+  
+  .form-group.full-width {
     grid-column: span 1;
   }
+  
+  .predict-btn {
+    grid-column: span 1;
+    padding: 16px;
+    font-size: 1.1rem;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  .price {
+    font-size: 2.5rem;
+  }
+}
+
+@media(max-width: 480px){
+  .container {
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .form-grid {
+    gap: 15px;
+  }
+  
+  input, select {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .predict-btn {
+    padding: 14px;
+    font-size: 1rem;
+  }
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Success animation */
+@keyframes successPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success {
+  animation: successPop 0.6s ease-out;
 }
