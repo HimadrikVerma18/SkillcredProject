@@ -52,3 +52,4 @@ This is a demo version that works without a backend. For production use with rea
 1. Deploy the Flask backend (`app.py`) to a Python hosting service
 2. Update the JavaScript to make API calls to your hosted backend
 3. Use the trained models in the `models/` directory
+# SkillcredProject
