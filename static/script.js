@@ -35,39 +35,60 @@ async function predictPrice() {
     // Create intelligent, category-specific prompt for Perplexity AI
     const prompt = createCategorySpecificPrompt(category, commonData, categoryData);
 
-    // Call Perplexity AI API
+    // Debug: Log the request being sent
+    const requestBody = {
+      model: config.perplexity.model,
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      max_tokens: config.perplexity.maxTokens,
+      temperature: config.perplexity.temperature,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0
+    };
+
+    console.log('Sending request to Perplexity API:', {
+      url: config.perplexity.apiUrl,
+      model: config.perplexity.model,
+      promptLength: prompt.length
+    });
+
+    // Call Perplexity AI API with corrected format
     const response = await fetch(config.perplexity.apiUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${config.perplexity.apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: config.perplexity.model,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: config.perplexity.maxTokens,
-        temperature: config.perplexity.temperature
-      })
+      body: JSON.stringify(requestBody)
     });
 
+    console.log('API Response Status:', response.status);
+    console.log('API Response Headers:', response.headers);
+
     if (!response.ok) {
-      throw new Error(`API call failed: ${response.status}`);
+      const errorText = await response.text();
+      console.error('API Error Response:', errorText);
+      throw new Error(`API call failed: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log('API Success Response:', result);
     
     // Parse the AI response
     let aiData;
     try {
       const content = result.choices[0].message.content;
+      console.log('AI Response Content:', content);
       aiData = JSON.parse(content);
+      console.log('Parsed AI Data:', aiData);
     } catch (parseError) {
       console.warn('Failed to parse AI response, using fallback logic');
+      console.error('Parse Error:', parseError);
       aiData = generateFallbackPrediction(category, commonData, categoryData);
     }
 
@@ -83,11 +104,14 @@ async function predictPrice() {
     }
 
     // Update confidence chart
-    const confidence = aiData.confidence || config.app.defaultConfidence;
+    const confidence = aiData.confidence || 0.7;
     updateConfidenceChart(confidence);
 
   } catch (error) {
     console.error('Error calling Perplexity API:', error);
+    
+    // Show error message to user
+    document.getElementById('predicted_price').innerText = '❌ API Error - Using Fallback';
     
     // Fallback to demo logic
     const fallbackData = generateFallbackPrediction(category, commonData, categoryData);
@@ -285,13 +309,13 @@ function generateFallbackPrediction(category, commonData, categoryData) {
     anomalyReason = 'Very low ratings - consider alternatives';
   }
 
-  let confidence = config.app.defaultConfidence;
+  let confidence = 0.7; // Fixed: Use hardcoded value instead of config.app.defaultConfidence
   if (commonData.brand_rating >= 4) confidence += 0.1;
   if (commonData.seller_rating >= 4) confidence += 0.1;
   confidence = Math.min(confidence, 0.95);
 
   return {
-    predicted_price: `${config.app.currency}${Math.round(predictedPrice).toLocaleString()}`,
+    predicted_price: `₹${Math.round(predictedPrice).toLocaleString()}`,
     confidence: confidence,
     is_anomaly: isAnomaly,
     anomaly_reason: anomalyReason
