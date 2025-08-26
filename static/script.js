@@ -37,7 +37,6 @@ async function predictPrice() {
 
     // Debug: Log the request being sent
     const requestBody = {
-      model: config.perplexity.model,
       messages: [
         {
           role: 'user',
@@ -53,7 +52,6 @@ async function predictPrice() {
 
     console.log('Sending request to Perplexity API:', {
       url: config.perplexity.apiUrl,
-      model: config.perplexity.model,
       promptLength: prompt.length
     });
 
