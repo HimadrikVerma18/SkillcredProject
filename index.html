@@ -30,6 +30,20 @@
     </div>
 
     <div class="form-group">
+      <label>AI Model</label>
+      <select id="ai-model" onchange="updateAIModel()">
+        <option value="llama-3.1-sonar-small-128k-online">Llama 3.1 Sonar Small (Online)</option>
+        <option value="llama-3.1-sonar-medium-128k-online">Llama 3.1 Sonar Medium (Online)</option>
+        <option value="llama-3.1-sonar-large-128k-online">Llama 3.1 Sonar Large (Online)</option>
+        <option value="llama-3.1-sonar-small-128k">Llama 3.1 Sonar Small</option>
+        <option value="llama-3.1-sonar-medium-128k">Llama 3.1 Sonar Medium</option>
+        <option value="llama-3.1-sonar-large-128k">Llama 3.1 Sonar Large</option>
+        <option value="mixtral-8x7b-instruct">Mixtral 8x7B Instruct</option>
+        <option value="codellama-34b-instruct">Code Llama 34B Instruct</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label>Brand Rating (1-5)</label>
       <input type="number" id="brand_rating" min="1" max="5" value="3">
     </div>
@@ -69,11 +83,11 @@
 <script>
 // Configuration embedded directly in HTML to avoid loading issues
 const config = {
-  // Perplexity AI API Configuration
+  // Perplexity AI API Configuration - Using valid models from their documentation
   perplexity: {
     apiKey: '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',
     apiUrl: 'https://api.perplexity.ai/chat/completions',
-    model: 'llama-3.1-sonar-small-128k', // Updated model name
+    model: 'llama-3.1-sonar-small-128k-online', // Valid model name
     maxTokens: 500,
     temperature: 0.3
   },
@@ -85,6 +99,13 @@ const config = {
     loadingMessage: '🤔 Analyzing...'
   }
 };
+
+// Function to update AI model
+function updateAIModel() {
+  const selectedModel = document.getElementById('ai-model').value;
+  config.perplexity.model = selectedModel;
+  console.log('AI Model updated to:', selectedModel);
+}
 
 // Category-specific field configurations
 const categoryFields = {
@@ -212,7 +233,7 @@ function updateFormFields() {
           <label>${field.label}</label>
           <input type="${field.type}" id="${field.id}" value="${field.value}" min="${field.min}" max="${field.max}">
         </div>
-      `;
+        `;
     }
   });
   
