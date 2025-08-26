@@ -1,0 +1,116 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  width: 95%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  color: #ff6f61;
+  margin-bottom: 30px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input, select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: border 0.3s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #ff6f61;
+}
+
+button {
+  grid-column: span 2;
+  padding: 15px;
+  background: linear-gradient(90deg, #ff6f61, #ff9472);
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  transition: opacity 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.result-card {
+  margin-top: 30px;
+  background: #f9f9f9;
+  border-radius: 20px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ff6f61;
+  margin-bottom: 15px;
+}
+
+.anomaly {
+  margin-top: 10px;
+  padding: 12px;
+  background: #fff0f0;
+  color: #d32f2f;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+canvas {
+  margin-top: 20px;
+}
+
+@media(max-width: 700px){
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  button {
+    grid-column: span 1;
+  }
+}
