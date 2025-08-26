@@ -68,7 +68,27 @@
   </div>
 </div>
 
-<script src="./config.js"></script>
+<script>
+// Configuration embedded directly in HTML to avoid loading issues
+const config = {
+  // Perplexity AI API Configuration
+  perplexity: {
+    apiKey: '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',
+    apiUrl: 'https://api.perplexity.ai/chat/completions',
+    model: 'llama-3.1-sonar-small-128k-online',
+    maxTokens: 500,
+    temperature: 0.3
+  },
+  
+  // App Configuration
+  app: {
+    currency: '₹',
+    defaultConfidence: 0.7,
+    loadingMessage: '🤔 Analyzing...'
+  }
+};
+</script>
+
 <script src="./static/script.js"></script>
 
 </body>
